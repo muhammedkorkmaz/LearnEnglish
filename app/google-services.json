@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "995251701138",
+    "firebase_url": "https://learn-english-5f459.firebaseio.com",
+    "project_id": "learn-english-5f459",
+    "storage_bucket": "learn-english-5f459.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:995251701138:android:2422f2900c2a1174",
+        "android_client_info": {
+          "package_name": "com.softonetech.learnenglish"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "995251701138-kpgjvtvl0rmubdr91mhq5opgc0vgpvnc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softonetech.learnenglish",
+            "certificate_hash": "ec4d900ba3f97f28d7c17f7eb80ff8597e6626be"
+          }
+        },
+        {
+          "client_id": "995251701138-icvlqtkfo221k8itr87oi22k7c9r74h1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDT2tQryM5g8aWhnFIJmlXBWsz0mTIs1W4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "995251701138-icvlqtkfo221k8itr87oi22k7c9r74h1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

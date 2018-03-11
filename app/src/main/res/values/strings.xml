@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Learn English</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_drama_detail">DramaDetailActivity</string>
+
+    <string name="time">00:00</string>
+
+    <string name="mediaPlay">Play</string>
+    <string name="mediaBackward">Backward</string>
+    <string name="mediaForward">Forward</string>
+    <string name="mediaPause">Pause</string>
+
+    <string name="banner_ad_unit_id">ca-app-pub-2936048571204455/1167623897</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

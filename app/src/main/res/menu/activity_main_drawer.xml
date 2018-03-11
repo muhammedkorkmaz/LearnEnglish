@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_drama"
+            android:icon="@drawable/ic_menu_send"
+            android:title="Drama" />
+        <item
+            android:id="@+id/nav_6_minute_english"
+            android:icon="@drawable/ic_menu_send"
+            android:title="6 Minute English" />
+        <item
+            android:id="@+id/nav_lingohack"
+            android:icon="@drawable/ic_menu_send"
+            android:title="LingoHack" />
+        <item
+            android:id="@+id/nav_the_english_we_speak"
+            android:icon="@drawable/ic_menu_send"
+            android:title="The English We Speak" />
+        <item
+            android:id="@+id/nav_news_report"
+            android:icon="@drawable/ic_menu_send"
+            android:title="News Report" />
+        <item
+            android:id="@+id/nav_english_at_university"
+            android:icon="@drawable/ic_menu_send"
+            android:title="English At University" />
+        <item
+            android:id="@+id/nav_witn"
+            android:icon="@drawable/ic_menu_send"
+            android:title="Words in the News" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+        </menu>
+    </item>
+
+</menu>
