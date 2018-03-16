@@ -79,12 +79,11 @@ public class MainActivity extends AppCompatActivity
             openSixMinuteEnglish();
         if (i == 6)
             openEnglishAtUniversity();
-        //MainActivity.this.startActivity(new Intent(MainActivity.this, FeedActivity.class));
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -95,7 +94,6 @@ public class MainActivity extends AppCompatActivity
             }
 
             this.doubleBackToExitPressedOnce = true;
-            // Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
 
             Snackbar.make(mCL, "Please click BACK again to exit", Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
@@ -126,8 +124,6 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-
-
             return true;
         }
 
@@ -162,7 +158,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(sendIntent);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
