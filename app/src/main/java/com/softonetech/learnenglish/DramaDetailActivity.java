@@ -1,6 +1,7 @@
 package com.softonetech.learnenglish;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -24,6 +25,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -75,18 +79,6 @@ public class DramaDetailActivity extends AppCompatActivity
             }
         });*/
 
-       /* Translate translate = TranslateOptions.getDefaultInstance().getService();
-
-        // The text to translate
-        String text = "Hello, world!";
-
-        // Translates some text into Russian
-        Translation translation =
-                translate.translate(
-                        text,
-                        TranslateOption.sourceLanguage("en"),
-                        TranslateOption.targetLanguage("ru"));
-*/
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         this.m_Url = getIntent().getStringExtra("url");
