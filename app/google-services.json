@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "995251701138-0ofokrjnd7rl87snd66o8ooq1fmpcpds.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softonetech.learnenglish",
+            "certificate_hash": "585789d6e8d0ad83bfedc657cbb74f0a3fb76393"
+          }
+        },
+        {
           "client_id": "995251701138-kpgjvtvl0rmubdr91mhq5opgc0vgpvnc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

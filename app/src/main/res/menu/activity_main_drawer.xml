@@ -5,41 +5,83 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_pronunciation"
+            android:icon="@drawable/pronunciation"
+            android:title="Pronunciation" />
+
+        <item
             android:id="@+id/nav_drama"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/drama"
             android:title="Drama" />
+
         <item
             android:id="@+id/nav_6_minute_english"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/six"
             android:title="6 Minute English" />
+
         <item
             android:id="@+id/nav_lingohack"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/lingohack"
             android:title="LingoHack" />
+
         <item
             android:id="@+id/nav_the_english_we_speak"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/englishwespeak"
             android:title="The English We Speak" />
-        <item
-            android:id="@+id/nav_news_report"
-            android:icon="@drawable/ic_menu_send"
-            android:title="News Report" />
+
         <item
             android:id="@+id/nav_english_at_university"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/university"
             android:title="English At University" />
+
+        <item
+            android:id="@+id/nav_english_at_work"
+            android:icon="@drawable/englishatwork"
+            android:title="English at Work" />
+
+        <item
+            android:id="@+id/nav_news_report"
+            android:icon="@drawable/news"
+            android:title="News Report" />
+
         <item
             android:id="@+id/nav_witn"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/newspaper"
             android:title="Words in the News" />
+
+        <item
+            android:id="@+id/nav_favorites"
+            android:icon="@android:drawable/btn_star_big_on"
+            android:title="Favorites" />
+
     </group>
 
-    <item android:title="Communicate">
+
+    <item android:title="Social">
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/share"
                 android:title="Share" />
+
+            <item
+                android:id="@+id/nav_rateUs"
+                android:icon="@drawable/rating"
+                android:title="Rate Us" />
+        </menu>
+    </item>
+    <item android:title="Other Apps">
+        <menu>
+            <item
+                android:id="@+id/nav_mathGame"
+                android:icon="@drawable/math_game"
+                android:title="Math Game" />
+
+            <item
+                android:id="@+id/nav_flashLight"
+                android:icon="@drawable/flashlight"
+                android:title="Flashlight" />
+
         </menu>
     </item>
 

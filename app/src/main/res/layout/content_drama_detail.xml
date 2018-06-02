@@ -5,9 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.softonetech.learnenglish.DramaDetailActivity"
-    tools:showIn="@layout/music_player">
+    tools:showIn="@layout/music_player"
+    >
 
-    <WebView
+    <com.softonetech.learnenglish.CustomWebView
         android:id="@+id/webview_drama"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

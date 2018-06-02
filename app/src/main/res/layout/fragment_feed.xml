@@ -3,7 +3,9 @@
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.softonetech.learnenglish.FeedFragment">
+    tools:context="com.softonetech.learnenglish.FeedFragment"
+    xmlns:shimmer="http://schemas.android.com/tools"
+    >
 
     <LinearLayout
         android:id="@+id/rl"
@@ -22,6 +24,30 @@
             android:layout_centerInParent="true"
             ads:adSize="BANNER"
             ads:adUnitId="@string/banner_ad_unit_id" />-->
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_view_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            shimmer:duration="800">
+
+            <!-- Adding 3 rows of placeholders -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/recipe_placeholder_item" />
+
+                <include layout="@layout/recipe_placeholder_item" />
+
+                <include layout="@layout/recipe_placeholder_item" />
+
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"

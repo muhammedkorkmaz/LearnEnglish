@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FF9800</color>
-    <color name="colorPrimaryDark">#F57C00</color>
-    <color name="colorAccent">#FFC107</color>
+    <color name="colorPrimary">#00b8d4</color>
+    <color name="colorPrimaryDark">#0088a3</color>
+    <color name="colorAccent">#62ebff</color>
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="transparent">#99000000</color>
+
+    <color name="translucent_dark">#80171717</color>
+    <color name="translucent_light">#80545456</color>
+
+    <color name="translucent_primary">#8000b8d4</color>
+    <color name="translucent_primaryDark">#800088a3</color>
+    <color name="translucent_accent">#8062ebff</color>
+
+    <color name="green">#5EAD9B</color>
+
+    <color name="placeholder_bg">#dddddd</color>
+    <color name="item_name">#0c0c0c</color>
+    <color name="description">#1a1a1a</color>
+    <color name="chef">#777</color>
+    <color name="timestamp">#777</color>
 </resources>

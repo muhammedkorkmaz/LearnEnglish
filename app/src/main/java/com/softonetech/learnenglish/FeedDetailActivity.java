@@ -10,11 +10,15 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Adapter;
 import android.widget.RelativeLayout;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.List;
 
@@ -22,7 +26,6 @@ public class FeedDetailActivity extends AppCompatActivity {
 
     private AdView mAdView;
 
-    private Adapter mAdapter;
     private Context mContext;
     private List<RssFeedModel> mFeedModelList;
     private String m_Title = null;
@@ -51,6 +54,8 @@ public class FeedDetailActivity extends AppCompatActivity {
         this.mAdView = findViewById(R.id.adViewFeedDetail);
         this.mAdView.loadAd(new AdRequest.Builder().addTestDevice("B85E3B305DFD350CBAEE82C5133FC392").build());
 
+        //this.mAdView.setVisibility(View.GONE);
+
         //mFeedModelList = (List<RssFeedModel>) getIntent().getSerializableExtra("dataset");
         mFeedModelList = RssFeedVariables.mRssFeedModelsGlobal;
 
@@ -59,6 +64,16 @@ public class FeedDetailActivity extends AppCompatActivity {
 
         FeedDetailActivity.this.mRecyclerView.setAdapter(
                 new FeedDetailAdapter(this.mContext, this.mFeedModelList, m_Title));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
@@ -71,4 +86,6 @@ public class FeedDetailActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

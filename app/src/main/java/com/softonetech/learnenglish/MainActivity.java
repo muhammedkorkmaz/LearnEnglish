@@ -1,5 +1,6 @@
 package com.softonetech.learnenglish;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,14 +43,9 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+
+        RssFeedVariables.mGameSettings = getPreferences(Context.MODE_PRIVATE);
+        RssFeedVariables.mPrefEditor = RssFeedVariables.mGameSettings.edit();
 
         mCL = findViewById(R.id.coordinatorLayout_main);
 
@@ -62,23 +58,43 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Random generator = new Random();
-        int i = generator.nextInt(7);
+        navigationView.setItemIconTintList(null);
 
-        if (i == 0)
+        Random generator = new Random();
+        int i = generator.nextInt(9);
+
+
+        if (i == 0) {
             openWordsInTheNews();
-        if (i == 1)
+        }
+        if (i == 1) {
             openNewsReport();
-        if (i == 2)
+        }
+        if (i == 2) {
             openTheEnglishWeSpeak();
-        if (i == 3)
+        }
+        if (i == 3) {
             openLingoHack();
-        if (i == 4)
+        }
+        if (i == 4) {
             openDramas();
-        if (i == 5)
+        }
+        if (i == 5) {
             openSixMinuteEnglish();
-        if (i == 6)
+        }
+        if (i == 6) {
             openEnglishAtUniversity();
+        }
+        if (i == 7) {
+            openPronunciation();
+        }
+        if (i == 8) {
+            openEnglishAtWork();
+        }
+
+        transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, FeedFragment.newInstance(mUrl, mTitle));
+        transaction.commit();
     }
 
     @Override
@@ -110,7 +126,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        //Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -124,11 +140,14 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -150,12 +169,34 @@ public class MainActivity extends AppCompatActivity
             openEnglishAtUniversity();
         } else if (id == R.id.nav_witn) {
             openWordsInTheNews();
+        }else if (id == R.id.nav_english_at_work) {
+            openEnglishAtWork();
+        }else if (id == R.id.nav_pronunciation) {
+            openPronunciation();
         } else if (id == R.id.nav_share) {
             Intent sendIntent = new Intent();
             sendIntent.setAction("android.intent.action.SEND");
             sendIntent.putExtra("android.intent.extra.TEXT", "https://play.google.com/store/apps/details?id=com.softonetech.learnenglish");
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
+        } else if (id == R.id.nav_rateUs) {
+            startActivity(new Intent("android.intent.action.VIEW"
+                    , Uri.parse("https://play.google.com/store/apps/details?id=com.softonetech.learnenglish")));
+        } else if (id == R.id.nav_mathGame) {
+            startActivity(new Intent("android.intent.action.VIEW"
+                    , Uri.parse("https://play.google.com/store/apps/details?id=com.softonetech.mathgame")));
+        } else if (id == R.id.nav_flashLight) {
+            startActivity(new Intent("android.intent.action.VIEW"
+                    , Uri.parse("https://play.google.com/store/apps/details?id=com.softonetech.flashlight")));
+        } else if (id == R.id.nav_favorites) {
+            mTitle = "Favorites";
+            mUrl = "";
+        }
+
+        if (id != R.id.nav_share || id != R.id.nav_rateUs || id != R.id.nav_mathGame || id != R.id.nav_flashLight) {
+            transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content_frame, FeedFragment.newInstance(mUrl, mTitle));
+            transaction.commit();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -171,10 +212,6 @@ public class MainActivity extends AppCompatActivity
         transaction.replace(R.id.content_frame, FeedFragment.newInstance(mUrl, mTitle));
         transaction.commit();
 
-        /*Intent intent = new Intent(this, FeedActivity.class);
-        intent.putExtra("url", "http://feeds.bbci.co.uk/learningenglish/english/features/drama/rss");
-        intent.putExtra("title", "Drama");
-        startActivity(intent);*/
     }
 
     private void openSixMinuteEnglish() {
@@ -185,80 +222,46 @@ public class MainActivity extends AppCompatActivity
         transaction.replace(R.id.content_frame, FeedFragment.newInstance(mUrl, mTitle));
         transaction.commit();
 
-        /*Intent intent = new Intent(this, FeedActivity.class);
-        intent.putExtra("url", "http://feeds.bbci.co.uk/learningenglish/english/features/6-minute-english/rss");
-        intent.putExtra("title", "6 Minute English");
-        startActivity(intent);*/
     }
 
     private void openLingoHack() {
         mTitle = "LingoHack";
         mUrl = "http://feeds.bbci.co.uk/learningenglish/english/features/lingohack/rss";
 
-        transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, FeedFragment.newInstance(mUrl, mTitle));
-        transaction.commit();
-
-        /*Intent intent = new Intent(this, FeedActivity.class);
-        intent.putExtra("url", "http://feeds.bbci.co.uk/learningenglish/english/features/lingohack/rss");
-        intent.putExtra("title", "LingoHack");
-        startActivity(intent);*/
     }
 
     private void openTheEnglishWeSpeak() {
         mTitle = "The English We Speak";
         mUrl = "http://feeds.bbci.co.uk/learningenglish/english/features/the-english-we-speak/rss";
 
-        transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, FeedFragment.newInstance(mUrl, mTitle));
-        transaction.commit();
-
-        /*Intent intent = new Intent(this, FeedActivity.class);
-        intent.putExtra("url", "http://feeds.bbci.co.uk/learningenglish/english/features/the-english-we-speak/rss");
-        intent.putExtra("title", "The English We Speak");
-        startActivity(intent);*/
     }
 
     private void openNewsReport() {
         mTitle = "News Report";
         mUrl = "http://feeds.bbci.co.uk/learningenglish/english/features/news-report/rss";
 
-        transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, FeedFragment.newInstance(mUrl, mTitle));
-        transaction.commit();
-
-        /*Intent intent = new Intent(this, FeedActivity.class);
-        intent.putExtra("url", "http://feeds.bbci.co.uk/learningenglish/english/features/news-report/rss");
-        intent.putExtra("title", "News Report");
-        startActivity(intent);*/
     }
 
     private void openEnglishAtUniversity() {
         mTitle = "English At University";
         mUrl = "http://feeds.bbci.co.uk/learningenglish/english/features/english-at-university/rss";
 
-        transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, FeedFragment.newInstance(mUrl, mTitle));
-        transaction.commit();
-
-       /* Intent intent = new Intent(this, FeedActivity.class);
-        intent.putExtra("url", "http://feeds.bbci.co.uk/learningenglish/english/features/english-at-university/rss");
-        intent.putExtra("title", "English At University");
-        startActivity(intent);*/
     }
 
     private void openWordsInTheNews() {
         mTitle = "Words in the News";
         mUrl = "http://feeds.bbci.co.uk/learningenglish/english/features/witn/rss";
 
-        transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, FeedFragment.newInstance(mUrl, mTitle));
-        transaction.commit();
+    }
 
-     /*   Intent intent = new Intent(this, FeedActivity.class);
-        intent.putExtra("url", "http://feeds.bbci.co.uk/learningenglish/english/features/witn/rss");
-        intent.putExtra("title", "Words in the News");
-        startActivity(intent);*/
+    private void openEnglishAtWork() {
+        mTitle = "English at Work";
+        mUrl = "http://feeds.bbci.co.uk/learningenglish/english/features/english-at-work/rss";
+    }
+
+    private void openPronunciation() {
+        mTitle = "Pronunciation";
+        mUrl = "http://feeds.bbci.co.uk/learningenglish/english/features/pronunciation/rss";
     }
 
     @Override

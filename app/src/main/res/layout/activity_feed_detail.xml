@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:fitsSystemWindows="true"
-    android:padding="2dp">
+    android:fitsSystemWindows="true">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -21,8 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        ads:adSize="BANNER"
+        ads:adSize="SMART_BANNER"
         ads:adUnitId="@string/banner_ad_unit_id" />
 
 </RelativeLayout>

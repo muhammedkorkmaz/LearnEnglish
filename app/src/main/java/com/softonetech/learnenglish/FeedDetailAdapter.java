@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -27,6 +28,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import me.tankery.lib.circularseekbar.CircularSeekBar;
+
 
 public class FeedDetailAdapter extends RecyclerView.Adapter<FeedDetailAdapter.ViewHolder> {
 
@@ -36,13 +39,19 @@ public class FeedDetailAdapter extends RecyclerView.Adapter<FeedDetailAdapter.Vi
     Fragment fragment = null;
     FragmentManager fragmentManager;
     Bundle bundle = new Bundle();
+    SharedPreference sharedPreference;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         //Button mButton;
         TextView textViewFeedDescription;
         TextView textViewFeedTitle;
         ImageView imageViewFeed;
-        LinearLayout ly;
+        RelativeLayout ly;
+        CircularSeekBar sb_Time;
+        ImageView img_Progress;
+        RelativeLayout rl_Progress;
+        TextView tv_progress;
+        ImageView img_Favorite;
 
         public ViewHolder(View v) {
             super(v);
@@ -50,13 +59,20 @@ public class FeedDetailAdapter extends RecyclerView.Adapter<FeedDetailAdapter.Vi
             this.imageViewFeed = v.findViewById(R.id.imageView_feed);
             this.textViewFeedDescription = v.findViewById(R.id.textView_feedDescription);
             this.ly = v.findViewById(R.id.layout_feed);
+            this.sb_Time = v.findViewById(R.id.sb_Time);
+            this.sb_Time.setMax(100);
+            this.img_Progress = v.findViewById(R.id.imageView_progress);
+            this.rl_Progress = v.findViewById(R.id.rl_progress);
+            this.tv_progress = v.findViewById(R.id.tv_progress);
+            this.img_Favorite = v.findViewById(R.id.img_favorite);
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public FeedDetailAdapter(Context context, List<RssFeedModel> dataSet, String title) {
+        sharedPreference = new SharedPreference();
 
-        mTitle=title;
+        mTitle = title;
 
         for (RssFeedModel feed : dataSet) {
             String rs = feed.title;
@@ -71,7 +87,7 @@ public class FeedDetailAdapter extends RecyclerView.Adapter<FeedDetailAdapter.Vi
         /*List<RssFeedModel> list = dataSet.stream()
                 .filter(p -> p.getTitle().contains(title)).collect(Collectors.toList());*/
 
-        List<RssFeedModel> list=new ArrayList<RssFeedModel>();
+        List<RssFeedModel> list = new ArrayList<RssFeedModel>();
 
         for (RssFeedModel o : dataSet) {
             if (o.getTitle().contains(title)) {
@@ -96,6 +112,8 @@ public class FeedDetailAdapter extends RecyclerView.Adapter<FeedDetailAdapter.Vi
 
         this.mRssFeedModels = list2;
         this.mContext = context;
+
+
         //this.fragmentManager = fragmentManager;
     }
 
@@ -105,6 +123,20 @@ public class FeedDetailAdapter extends RecyclerView.Adapter<FeedDetailAdapter.Vi
 
     public void onBindViewHolder(ViewHolder holder, int position) {
         final RssFeedModel rssFeedModel = (RssFeedModel) this.mRssFeedModels.get(position);
+
+        int progress = 0;
+
+        progress = RssFeedVariables.mGameSettings.getInt(rssFeedModel.title, progress);
+        holder.sb_Time.setProgress(progress);
+
+        if (progress != 99) {
+            holder.rl_Progress.setVisibility(View.VISIBLE);
+            holder.tv_progress.setText("%" + progress);
+            holder.img_Progress.setVisibility(View.GONE);
+        } else {
+            holder.rl_Progress.setVisibility(View.GONE);
+            holder.img_Progress.setVisibility(View.VISIBLE);
+        }
 
         holder.textViewFeedTitle.setText(rssFeedModel.title);
         holder.textViewFeedDescription.setText(rssFeedModel.description);
@@ -126,6 +158,8 @@ public class FeedDetailAdapter extends RecyclerView.Adapter<FeedDetailAdapter.Vi
             public void onClick(View view) {
 
                 Intent intent = new Intent(mContext, DramaDetailActivity.class);
+                intent.putExtra("count", getItemCount());
+                intent.putExtra("mainTitle", mTitle);
                 intent.putExtra("url", rssFeedModel.link);
                 intent.putExtra("title", rssFeedModel.title);
                 intent.putExtra("imgUrl", rssFeedModel.imgUrl);
@@ -133,6 +167,39 @@ public class FeedDetailAdapter extends RecyclerView.Adapter<FeedDetailAdapter.Vi
                 mContext.startActivity(intent);
             }
         });
+
+        if (checkFavoriteItem(rssFeedModel)) {
+            holder.img_Favorite.setImageResource(android.R.drawable.btn_star_big_on);
+        } else {
+            holder.img_Favorite.setImageResource(android.R.drawable.btn_star_big_off);
+        }
+
+        holder.img_Favorite.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!checkFavoriteItem(rssFeedModel)) {
+                    sharedPreference.addFavorite(mContext, rssFeedModel);
+                    notifyDataSetChanged();
+                } else {
+                    sharedPreference.removeFavorite(mContext, rssFeedModel);
+                    notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
+    public boolean checkFavoriteItem(RssFeedModel checkProduct) {
+        boolean check = false;
+        List<RssFeedModel> favorites = sharedPreference.getFavorites(mContext);
+        if (favorites != null) {
+            for (RssFeedModel product : favorites) {
+                if (product.title.equals(checkProduct.title)) {
+                    check = true;
+                    break;
+                }
+            }
+        }
+        return check;
     }
 
     public int getItemCount() {
