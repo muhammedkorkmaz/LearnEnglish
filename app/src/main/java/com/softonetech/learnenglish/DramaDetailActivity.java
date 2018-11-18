@@ -1,11 +1,17 @@
 package com.softonetech.learnenglish;
 
-import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,40 +19,38 @@ import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 public class DramaDetailActivity extends AppCompatActivity
@@ -73,7 +77,9 @@ public class DramaDetailActivity extends AppCompatActivity
 
     private MediaPlayer mediaPlayer;
 
-    private ImageButton imgbtn_MediaPlayPause;
+    private ImageButton imgBtn_MediaPlayPause;
+    private ImageButton imgBtn_MediaBackward;
+    private ImageButton imgBtn_MediaForward;
 
     private TextView tv_MediaTime;
     private TextView tv_MediaTotalTime;
@@ -81,16 +87,22 @@ public class DramaDetailActivity extends AppCompatActivity
     private final Handler handler = new Handler();
 
     private int mediaFileLengthInMilliseconds;
+    private int m_Progress;
 
     private InterstitialAd transitionAd;
     private CoordinatorLayout coordinatorLayout;
     //private String m_TranslateResult;
 
-    private CustomWebView m_wvDrama;
+    private WebView m_wvDrama;
 
     private WebView vw_DramaDetailToolBar;
     private View ly_MusicPlayer;
 
+    NotificationManager notificationManager;
+
+    TabHost tabHost;
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +115,25 @@ public class DramaDetailActivity extends AppCompatActivity
 
         coordinatorLayout = findViewById(R.id
                 .cl_detail);
+
+
+        /*tabHost = findViewById(R.id.tabHost);
+        tabHost.setup();
+
+        TabHost.TabSpec spec = tabHost.newTabSpec("One");
+        spec.setContent(R.id.tab1);
+        spec.setIndicator("Intro");
+        tabHost.addTab(spec);
+
+        spec = tabHost.newTabSpec("Two");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("Transcript");
+        tabHost.addTab(spec);
+
+        spec = tabHost.newTabSpec("Three");
+        spec.setContent(R.id.tab3);
+        spec.setIndicator("Vocabulary");
+        tabHost.addTab(spec);*/
 
         int count = 0;
         this.m_count = getIntent().getIntExtra("count", count);
@@ -130,10 +161,13 @@ public class DramaDetailActivity extends AppCompatActivity
         loadTransitionAd();
 
         this.mAdView = findViewById(R.id.adView);
-        this.mAdView.loadAd(new AdRequest.Builder().addTestDevice("B85E3B305DFD350CBAEE82C5133FC392").build());
+        this.mAdView.loadAd(new AdRequest.Builder()
+                .addTestDevice("B85E3B305DFD350CBAEE82C5133FC392")
+                .build());
 
         //this.mAdView.setVisibility(View.GONE);
 
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         vw_DramaDetailToolBar = findViewById(R.id.vw_dramaDetailToolBar);
         vw_DramaDetailToolBar.setVisibility(View.GONE);
@@ -144,8 +178,15 @@ public class DramaDetailActivity extends AppCompatActivity
 
         this.img_ActionBar = findViewById(R.id.img_drama);
 
-        this.imgbtn_MediaPlayPause = findViewById(R.id.imageButton_mediaPlayPause);
-        this.imgbtn_MediaPlayPause.setOnClickListener(this);
+        this.imgBtn_MediaPlayPause = findViewById(R.id.imageButton_mediaPlayPause);
+        this.imgBtn_MediaPlayPause.setOnClickListener(this);
+
+        this.imgBtn_MediaBackward = findViewById(R.id.imageButton_mediaBackward);
+        this.imgBtn_MediaBackward.setOnClickListener(this);
+
+        this.imgBtn_MediaForward = findViewById(R.id.imageButton_mediaForward);
+        this.imgBtn_MediaForward.setOnClickListener(this);
+
 
         this.sb_Media = findViewById(R.id.seekBar_media);
         this.sb_Media.setMax(99);
@@ -154,6 +195,7 @@ public class DramaDetailActivity extends AppCompatActivity
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 int progressDetail = 0;
+                m_Progress = progress;
                 progressDetail = RssFeedVariables.mGameSettings.getInt(m_Title, progressDetail);
                 if (progressDetail < progress) {
                     RssFeedVariables.mPrefEditor.putInt(m_Title, progress);
@@ -204,10 +246,11 @@ public class DramaDetailActivity extends AppCompatActivity
                 });
 
         //m_wvDrama = new CustomWebView(DramaDetailActivity.this);
-        m_wvDrama = (CustomWebView) findViewById(R.id.webview_drama);
-        m_wvDrama.getSettings().setJavaScriptEnabled(true);
-        m_wvDrama.getSettings().setPluginState(WebSettings.PluginState.ON);
+        m_wvDrama = findViewById(R.id.webView_drama);
+        m_wvDrama.setBackgroundColor(Color.parseColor("#0088a3"));
 
+        //m_wvDrama.getSettings().setJavaScriptEnabled(true);
+        //m_wvDrama.getSettings().setPluginState(WebSettings.PluginState.ON);
 
         new FetchContent().execute();
 
@@ -218,11 +261,22 @@ public class DramaDetailActivity extends AppCompatActivity
         ly_MusicPlayer = findViewById(R.id.ly_musicPlayer);
         ly_MusicPlayer.setVisibility(View.GONE);
 
-
         vw_DramaDetailToolBar.setVisibility(View.VISIBLE);
         vw_DramaDetailToolBar.getSettings().setJavaScriptEnabled(true);
         vw_DramaDetailToolBar.loadUrl("http://www.bbc.co.uk/programmes/" + id + "/player");
         vw_DramaDetailToolBar.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+        vw_DramaDetailToolBar.setVerticalScrollBarEnabled(false);
+        vw_DramaDetailToolBar.setHorizontalScrollBarEnabled(false);
+
+//Only disabled the horizontal scrolling:
+        vw_DramaDetailToolBar.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+
+//To disabled the horizontal and vertical scrolling:
+        vw_DramaDetailToolBar.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                return (event.getAction() == MotionEvent.ACTION_MOVE);
+            }
+        });
 
         RssFeedVariables.mPrefEditor.putInt(m_Title, 99);
         RssFeedVariables.mPrefEditor.commit();
@@ -260,23 +314,41 @@ public class DramaDetailActivity extends AppCompatActivity
 
                 if (!mediaPlayer.isPlaying()) {
                     this.mediaPlayer.start();
-                    this.imgbtn_MediaPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                    this.imgBtn_MediaPlayPause.setImageResource(android.R.drawable.ic_media_pause);
                 } else {
                     this.mediaPlayer.pause();
-                    this.imgbtn_MediaPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                    this.imgBtn_MediaPlayPause.setImageResource(android.R.drawable.ic_media_play);
                 }
 
                 primarySeekBarProgressUpdater();
 
                 break;
 
-          /*  case R.id.imageButton_mediaBackward:
+            case R.id.imageButton_mediaBackward:
+                if (this.mediaPlayer.isPlaying()) {
 
+                    this.mediaPlayer.pause();
+
+                    int playPositionInMillisecconds = (mediaFileLengthInMilliseconds / 100) * m_Progress - 5000;
+                    //this.sb_Media.setSecondaryProgress(m_Progress - 500);
+
+                    mediaPlayer.seekTo(playPositionInMillisecconds);
+                    this.mediaPlayer.start();
+                }
                 break;
 
             case R.id.imageButton_mediaForward:
+                if (this.mediaPlayer.isPlaying()) {
 
-                break;*/
+                    this.mediaPlayer.pause();
+
+                    int playPositionInMilliseconds = (mediaFileLengthInMilliseconds / 100) * m_Progress + 5000;
+                    //this.sb_Media.setSecondaryProgress(m_Progress + 500);
+
+                    mediaPlayer.seekTo(playPositionInMilliseconds);
+                    this.mediaPlayer.start();
+                }
+                break;
         }
     }
 
@@ -311,13 +383,17 @@ public class DramaDetailActivity extends AppCompatActivity
         if (this.mediaPlayer.isPlaying())
             this.mediaPlayer.stop();
         dismissProgressDialog();
+        notificationManager.cancelAll();
     }
 
     @Override
     protected void onPause() {
         if (this.mediaPlayer.isPlaying()) {
-            this.mediaPlayer.pause();
-            this.imgbtn_MediaPlayPause.setImageResource(android.R.drawable.ic_media_play);
+
+            sendNotification(m_Title, m_ImageUrl, m_Url);
+
+            //this.mediaPlayer.pause();
+            //this.imgbtn_MediaPlayPause.setImageResource(android.R.drawable.ic_media_play);
         }
         super.onPause();
     }
@@ -330,17 +406,66 @@ public class DramaDetailActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        if (this.mediaPlayer.isPlaying())
-            this.mediaPlayer.stop();
+        //if (this.mediaPlayer.isPlaying())
+        //  this.mediaPlayer.stop();
         dismissProgressDialog();
-
 
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            onBackPressed();
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+            int isRated = -1;
+            isRated = RssFeedVariables.mGameSettings.getInt("IsRated", isRated);
+
+            int rateDay = 0;
+            rateDay = RssFeedVariables.mGameSettings.getInt("RateDay", rateDay);
+
+            String day = (String) DateFormat.format("dd", System.currentTimeMillis());
+
+            if (isRated == -1 || (isRated == 0 && rateDay != 0 && Integer.parseInt(day) > rateDay + 1)) {
+
+                AlertDialog.Builder adb = new AlertDialog.Builder(this);
+                adb.setTitle(getString(R.string.rateText));
+                adb.setIcon(android.R.drawable.star_big_on);
+                adb.setPositiveButton(getString(R.string.rate), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Uri uri = Uri.parse("market://details?id=" + getApplication().getPackageName());
+                        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                        try {
+                            startActivity(goToMarket);
+                        } catch (ActivityNotFoundException e) {
+                            startActivity(new Intent(Intent.ACTION_VIEW,
+                                    Uri.parse("http://play.google.com/store/apps/details?id=" + getApplication().getPackageName())));
+                        }
+
+                        RssFeedVariables.mPrefEditor.putInt("IsRated", 1);
+                        RssFeedVariables.mPrefEditor.commit();
+                    }
+                });
+
+                adb.setNegativeButton(getString(R.string.notNow), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        RssFeedVariables.mPrefEditor.putInt("IsRated", 0);
+
+                        String day = (String) DateFormat.format("dd", System.currentTimeMillis());
+                        RssFeedVariables.mPrefEditor.putInt("RateDay", Integer.parseInt(day));
+
+                        RssFeedVariables.mPrefEditor.commit();
+
+                        onBackPressed();
+                    }
+                });
+                adb.show();
+            } else {
+                onBackPressed();
+            }
+        } else {
+            return false;
         }
         return true;
     }
@@ -361,7 +486,7 @@ public class DramaDetailActivity extends AppCompatActivity
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        this.imgbtn_MediaPlayPause.setImageResource(android.R.drawable.ic_media_play);
+        this.imgBtn_MediaPlayPause.setImageResource(android.R.drawable.ic_media_play);
     }
 
     private void dismissProgressDialog() {
@@ -370,9 +495,33 @@ public class DramaDetailActivity extends AppCompatActivity
         }
     }
 
+    private void sendNotification(String title, String imgUrl, String url) {
+        Intent intent = new Intent(this, DramaDetailActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("url", url);
+        intent.putExtra("title", title);
+        intent.putExtra("imgUrl", imgUrl);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setAutoCancel(true)
+                .setContentIntent(PendingIntent
+                        .getActivity(this,
+                                0,
+                                intent,
+                                PendingIntent.FLAG_UPDATE_CURRENT));
+
+        notificationManager.notify(0, notificationBuilder.build());
+
+    }
+
     private class FetchContent extends AsyncTask<Void, Void, Void> {
 
         String content;
+        String contentTranscript;
+        String contentVocabulary;
+        String contentIntro;
+
         String mediaUrl;
         String pDFUrl;
         String videoID;
@@ -396,7 +545,9 @@ public class DramaDetailActivity extends AppCompatActivity
             try {
                 Document doc = Jsoup.connect(m_Url).get();
                 Elements elementsContent = doc.select("div[class=text]");  // class ismi post-content olan verileri çekmek için
+
                 content = elementsContent.html();
+
                 Elements elementsMedia = doc.select("a[class=download bbcle-download-extension-mp3]");  // class ismi post-content olan verileri çekmek için
                 String relHref = elementsMedia.attr("href"); // == "/"
                 mediaUrl = elementsMedia.attr("abs:href");
@@ -417,19 +568,34 @@ public class DramaDetailActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            m_Content = "<div style='text-align:justify; " +
+            m_Content = "<div style=' text-align:justify;color:white;" +
                     "font-size: 18px; " +
                     "font-family:'Comic Sans MS', cursive, sans-serif; ' >"
                     +
                     content +
                     "</div>";
             m_wvDrama.loadData(m_Content, "text/html", "UTF-8");
+
+           /* m_Content = "<div style=' text-align:justify;color:white;" +
+                    "font-size: 18px; " +
+                    "font-family:'Comic Sans MS', cursive, sans-serif; ' >"
+                    +
+                    contentVocabulary +
+                    "</div>";
+            m_wvDramaVocabulary.loadData(m_Content, "text/html", "UTF-8");
+
+            m_Content = "<div style=' text-align:justify;color:white;" +
+                    "font-size: 18px; " +
+                    "font-family:'Comic Sans MS', cursive, sans-serif; ' >"
+                    +
+                    contentIntro +
+                    "</div>";
+            */
+
             m_MediaUrl = mediaUrl;
 
             if (m_MediaUrl != null && !m_MediaUrl.equals("")) {
                 try {
-                    vw_DramaDetailToolBar.setVisibility(View.GONE);
-
                     mediaPlayer.setDataSource(m_MediaUrl);
                     mediaPlayer.prepare();
                     mediaFileLengthInMilliseconds = mediaPlayer.getDuration();

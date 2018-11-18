@@ -26,7 +26,8 @@
         <activity
             android:name=".DramaDetailActivity"
             android:label="@string/title_activity_drama_detail"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTask"/>
         <activity android:name=".FeedDetailActivity" />
 
         <meta-data
@@ -36,6 +37,9 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"></activity>
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
     </application>
 
 </manifest>

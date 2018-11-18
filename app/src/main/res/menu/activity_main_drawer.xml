@@ -4,15 +4,7 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_pronunciation"
-            android:icon="@drawable/pronunciation"
-            android:title="Pronunciation" />
 
-        <item
-            android:id="@+id/nav_drama"
-            android:icon="@drawable/drama"
-            android:title="Drama" />
 
         <item
             android:id="@+id/nav_6_minute_english"
@@ -23,6 +15,16 @@
             android:id="@+id/nav_lingohack"
             android:icon="@drawable/lingohack"
             android:title="LingoHack" />
+
+        <item
+            android:id="@+id/nav_pronunciation"
+            android:icon="@drawable/pronunciation"
+            android:title="Pronunciation" />
+
+        <item
+            android:id="@+id/nav_drama"
+            android:icon="@drawable/drama"
+            android:title="Drama" />
 
         <item
             android:id="@+id/nav_the_english_we_speak"
@@ -57,7 +59,7 @@
     </group>
 
 
-    <item android:title="Social">
+    <item android:title="Did You Like?">
         <menu>
             <item
                 android:id="@+id/nav_share"
@@ -72,6 +74,11 @@
     </item>
     <item android:title="Other Apps">
         <menu>
+            <item
+                android:id="@+id/nav_crankyBird"
+                android:icon="@drawable/cranky_bird"
+                android:title="Cranky Bird" />
+
             <item
                 android:id="@+id/nav_mathGame"
                 android:icon="@drawable/math_game"

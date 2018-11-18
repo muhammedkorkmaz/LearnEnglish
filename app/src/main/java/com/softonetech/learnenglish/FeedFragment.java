@@ -82,6 +82,9 @@ public class FeedFragment extends Fragment {
     SharedPreference sharedPreference;
     List<RssFeedModel> favorites;
 
+    //private AdView adView;
+    //LinearLayout adContainer;
+
     public FeedFragment() {
         // Required empty public constructor
     }
@@ -114,15 +117,16 @@ public class FeedFragment extends Fragment {
     }
 
 
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         this.m_ActionTitle = mTitle;
         this.m_RSSUrl = mUrl;
 
-        /*mAdView = getActivity().findViewById(R.id.adViewFeed);
+        mAdView = getActivity().findViewById(R.id.adViewFeed);
         mAdView.loadAd(new AdRequest.Builder().addTestDevice("B85E3B305DFD350CBAEE82C5133FC392").build());
-        */
+        //mAdView.setVisibility(View.GONE);
+
+        //adContainer = view.findViewById(R.id.banner_container);
 
         getActivity().setTitle(this.m_ActionTitle);
 
@@ -217,6 +221,8 @@ public class FeedFragment extends Fragment {
                         if (!(title == null || link == null || description == null || imgUrl == null)) {
                             if (isItem) {
                                 items.add(new RssFeedModel(title, link, description, imgUrl));
+
+
                             } else {
                                 this.mFeedTitle = title;
                                 this.mFeedLink = link;
@@ -283,6 +289,14 @@ public class FeedFragment extends Fragment {
             }
             mShimmerViewContainer.stopShimmerAnimation();
             mShimmerViewContainer.setVisibility(View.GONE);
+
+            //adView = new AdView(mContext, "651032438571643_654451448229742", AdSize.BANNER_HEIGHT_50);
+            // Find the Ad Container
+
+            // Add the ad view to your activity layout
+            //adContainer.addView(adView);
+            // Request an ad
+            //adView.loadAd();
             //progressDialog.dismiss();
         }
     }
@@ -329,4 +343,5 @@ public class FeedFragment extends Fragment {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
+
 }

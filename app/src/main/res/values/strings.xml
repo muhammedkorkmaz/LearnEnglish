@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Learn English</string>
+    <string name="facebook_app_id">651032438571643</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -93,4 +94,7 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
 
+    <string name="rate">Rate</string>
+    <string name="notNow">Later</string>
+    <string name="rateText">Give us 5 stars</string>
 </resources>

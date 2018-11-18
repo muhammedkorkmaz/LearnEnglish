@@ -21,6 +21,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity
@@ -169,9 +171,9 @@ public class MainActivity extends AppCompatActivity
             openEnglishAtUniversity();
         } else if (id == R.id.nav_witn) {
             openWordsInTheNews();
-        }else if (id == R.id.nav_english_at_work) {
+        } else if (id == R.id.nav_english_at_work) {
             openEnglishAtWork();
-        }else if (id == R.id.nav_pronunciation) {
+        } else if (id == R.id.nav_pronunciation) {
             openPronunciation();
         } else if (id == R.id.nav_share) {
             Intent sendIntent = new Intent();
@@ -188,12 +190,15 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_flashLight) {
             startActivity(new Intent("android.intent.action.VIEW"
                     , Uri.parse("https://play.google.com/store/apps/details?id=com.softonetech.flashlight")));
+        } else if (id == R.id.nav_crankyBird) {
+            startActivity(new Intent("android.intent.action.VIEW"
+                    , Uri.parse("https://play.google.com/store/apps/details?id=com.softonetech.abird")));
         } else if (id == R.id.nav_favorites) {
             mTitle = "Favorites";
             mUrl = "";
         }
 
-        if (id != R.id.nav_share || id != R.id.nav_rateUs || id != R.id.nav_mathGame || id != R.id.nav_flashLight) {
+        if (id != R.id.nav_share || id != R.id.nav_rateUs || id != R.id.nav_mathGame || id != R.id.nav_flashLight || id != R.id.nav_crankyBird) {
             transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, FeedFragment.newInstance(mUrl, mTitle));
             transaction.commit();

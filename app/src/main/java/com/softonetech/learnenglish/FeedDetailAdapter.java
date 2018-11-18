@@ -186,6 +186,7 @@ public class FeedDetailAdapter extends RecyclerView.Adapter<FeedDetailAdapter.Vi
                 }
             }
         });
+
     }
 
     public boolean checkFavoriteItem(RssFeedModel checkProduct) {
