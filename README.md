@@ -8,6 +8,6 @@ Features:
 * User friendly screen design
 * Good categorisation
 
-Android SDK versions:
+Android SDK versions :
 Min SDK Version : 18
 Target SDK Version : 27
