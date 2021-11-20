@@ -7,3 +7,7 @@ Features:
 * Sound player that play the sounds recived from web service and let you forward or backward 15 seconds.
 * User friendly screen design
 * Good categorisation
+
+Android SDK versions:
+Min SDK Version : 18
+Target SDK Version : 27
